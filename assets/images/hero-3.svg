@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400">
+  <rect width="500" height="400" fill="#eff6ff" rx="20"/>
+  <rect x="150" y="100" width="200" height="200" fill="#3b82f6" opacity="0.2" rx="30"/>
+  <rect x="170" y="120" width="160" height="160" fill="#3b82f6" opacity="0.4" rx="20"/>
+  <text x="250" y="210" text-anchor="middle" font-size="40" fill="white" font-family="Arial">🎨</text>
+</svg>
