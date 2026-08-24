@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+# Disable conflicting MPMs and ensure prefork is active
+a2dismod mpm_event mpm_worker 2>/dev/null || true
+a2enmod mpm_prefork 2>/dev/null || true
+
 # If no external database host is provided, run embedded MariaDB
 if [ -z "$MYSQLHOST" ] && [ -z "$DB_HOST" ]; then
     echo "Starting embedded MariaDB server..."
