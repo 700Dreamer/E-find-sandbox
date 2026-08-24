@@ -1,0 +1,13 @@
+{
+    "name": "efind/app",
+    "description": "E-Find Application",
+    "type": "project",
+    "require": {
+        "php": ">=8.0",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*",
+        "ext-mysqli": "*",
+        "ext-gd": "*",
+        "ext-zip": "*"
+    }
+}
