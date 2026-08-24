@@ -30,18 +30,24 @@ if [ -z "$MYSQLHOST" ] && [ -z "$DB_HOST" ]; then
         sleep 1
     done
 
-    # Ensure privileges for root on 127.0.0.1 and localhost
-    mysql -u root -e "
-        CREATE DATABASE IF NOT EXISTS e_find_db;
-        GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
-        GRANT ALL PRIVILEGES ON *.* TO 'root'@'127.0.0.1' WITH GRANT OPTION;
-        FLUSH PRIVILEGES;
-    " 2>/dev/null || true
+    # Remove socket authentication plugin requirement from root user so Apache/PHP (www-data) can connect
+    echo "Configuring MariaDB user permissions..."
+    mariadb -u root <<'EOF' 2>/dev/null || true
+ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('');
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
+CREATE USER IF NOT EXISTS 'root'@'127.0.0.1' IDENTIFIED BY '';
+CREATE USER IF NOT EXISTS 'root'@'%' IDENTIFIED BY '';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'127.0.0.1' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+CREATE DATABASE IF NOT EXISTS e_find_db;
+FLUSH PRIVILEGES;
+EOF
 
     # Import schema if available
     if [ -f /var/www/html/e_find_db.sql ]; then
         echo "Importing e_find_db.sql..."
-        mysql -u root e_find_db < /var/www/html/e_find_db.sql 2>/dev/null || true
+        mariadb -u root e_find_db < /var/www/html/e_find_db.sql 2>/dev/null || true
     fi
 fi
 
